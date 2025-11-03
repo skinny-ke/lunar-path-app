@@ -41,28 +41,76 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_checkins: {
+        Row: {
+          created_at: string
+          date: string
+          energy_level: number | null
+          id: string
+          mood: string | null
+          notes: string | null
+          sleep_hours: number | null
+          user_id: string
+          water_intake: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          energy_level?: number | null
+          id?: string
+          mood?: string | null
+          notes?: string | null
+          sleep_hours?: number | null
+          user_id: string
+          water_intake?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          energy_level?: number | null
+          id?: string
+          mood?: string | null
+          notes?: string | null
+          sleep_hours?: number | null
+          user_id?: string
+          water_intake?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          avatar_url: string | null
           average_cycle_length: number
           average_period_length: number
           created_at: string
           id: string
+          last_period_date: string | null
+          notification_days_before: number | null
+          notification_enabled: boolean | null
           updated_at: string
           username: string | null
         }
         Insert: {
+          avatar_url?: string | null
           average_cycle_length?: number
           average_period_length?: number
           created_at?: string
           id: string
+          last_period_date?: string | null
+          notification_days_before?: number | null
+          notification_enabled?: boolean | null
           updated_at?: string
           username?: string | null
         }
         Update: {
+          avatar_url?: string | null
           average_cycle_length?: number
           average_period_length?: number
           created_at?: string
           id?: string
+          last_period_date?: string | null
+          notification_days_before?: number | null
+          notification_enabled?: boolean | null
           updated_at?: string
           username?: string | null
         }

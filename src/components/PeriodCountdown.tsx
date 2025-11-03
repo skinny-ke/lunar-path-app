@@ -24,15 +24,23 @@ const PeriodCountdown = ({ userId }: PeriodCountdownProps) => {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("average_cycle_length")
+        .select("average_cycle_length, last_period_date")
         .eq("id", userId)
-        .single();
+        .maybeSingle();
 
       if (cycles && cycles.length > 0 && profile) {
         const lastPeriod = parseISO(cycles[0].start_date);
         const predicted = addDays(lastPeriod, profile.average_cycle_length);
         setNextPeriodDate(predicted);
         setDaysUntil(differenceInDays(predicted, new Date()));
+
+        // Update last_period_date in profile if not set or outdated
+        if (!profile.last_period_date || profile.last_period_date !== cycles[0].start_date) {
+          await supabase
+            .from("profiles")
+            .update({ last_period_date: cycles[0].start_date })
+            .eq("id", userId);
+        }
       }
     };
 

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
+import { calculateFertility, isDateInFertileWindow, isOvulationDay } from "@/utils/fertility";
+import { Badge } from "@/components/ui/badge";
 
 interface CalendarViewProps {
   userId: string;
@@ -13,6 +15,7 @@ interface CalendarViewProps {
 const CalendarView = ({ userId }: CalendarViewProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [periodDays, setPeriodDays] = useState<string[]>([]);
+  const [fertilityData, setFertilityData] = useState<ReturnType<typeof calculateFertility> | null>(null);
 
   useEffect(() => {
     const fetchPeriodDays = async () => {
@@ -39,6 +42,24 @@ const CalendarView = ({ userId }: CalendarViewProps) => {
     };
 
     fetchPeriodDays();
+
+    const fetchFertilityData = async () => {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("last_period_date, average_cycle_length")
+        .eq("id", userId)
+        .single();
+
+      if (profile) {
+        const fertility = calculateFertility(
+          profile.last_period_date,
+          profile.average_cycle_length
+        );
+        setFertilityData(fertility);
+      }
+    };
+
+    fetchFertilityData();
   }, [userId, currentMonth]);
 
   const monthStart = startOfMonth(currentMonth);
@@ -78,6 +99,12 @@ const CalendarView = ({ userId }: CalendarViewProps) => {
             const dayStr = format(day, "yyyy-MM-dd");
             const isPeriod = periodDays.includes(dayStr);
             const isToday = isSameDay(day, new Date());
+            const inFertileWindow = fertilityData && isDateInFertileWindow(
+              day,
+              fertilityData.fertileWindowStart,
+              fertilityData.fertileWindowEnd
+            );
+            const isOvulation = fertilityData && isOvulationDay(day, fertilityData.ovulationDate);
 
             return (
               <div
@@ -85,14 +112,31 @@ const CalendarView = ({ userId }: CalendarViewProps) => {
                 className={cn(
                   "aspect-square flex items-center justify-center rounded-full text-sm transition-all duration-300",
                   isPeriod && "bg-gradient-primary text-white shadow-glow",
-                  isToday && !isPeriod && "border-2 border-primary",
-                  !isPeriod && "hover:bg-muted cursor-pointer"
+                  isOvulation && !isPeriod && "bg-pink-500/20 border-2 border-pink-500 text-pink-700 font-bold",
+                  inFertileWindow && !isPeriod && !isOvulation && "bg-teal-500/10 border border-teal-500/30",
+                  isToday && !isPeriod && !isOvulation && "border-2 border-primary",
+                  !isPeriod && !inFertileWindow && !isOvulation && "hover:bg-muted cursor-pointer"
                 )}
               >
                 {format(day, "d")}
               </div>
             );
           })}
+        </div>
+
+        <div className="flex flex-wrap gap-4 mt-6 pt-6 border-t text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-gradient-primary"></div>
+            <span>Period</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-pink-500/20 border-2 border-pink-500"></div>
+            <span>Ovulation</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-teal-500/10 border border-teal-500/30"></div>
+            <span>Fertile Window</span>
+          </div>
         </div>
       </CardContent>
     </Card>
