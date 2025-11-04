@@ -8,6 +8,7 @@ import QuickActions from "@/components/QuickActions";
 import CycleSummary from "@/components/CycleSummary";
 import DailyQuote from "@/components/DailyQuote";
 import FertilityInfo from "@/components/FertilityInfo";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { calculateFertility, FertilityData } from "@/utils/fertility";
 
 const Dashboard = () => {
@@ -63,6 +64,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-soft pb-20">
+      <OnboardingTour />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-6">
           <DailyQuote />
