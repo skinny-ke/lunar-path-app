@@ -6,13 +6,15 @@ import Navigation from "@/components/Navigation";
 import ProfileSettings from "@/components/ProfileSettings";
 import ShareApp from "@/components/ShareApp";
 import { Button } from "@/components/ui/button";
-import { MessageSquareHeart, Download, LogOut } from "lucide-react";
+import { MessageSquareHeart, Download, LogOut, Moon, Sun } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/hooks/use-theme";
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -61,6 +63,26 @@ const Profile = () => {
         </div>
         <div className="space-y-6">
           <ProfileSettings userId={user.id} />
+          
+          <div className="flex items-center justify-between p-4 bg-gradient-card rounded-xl shadow-soft border border-border/50">
+            <div className="flex items-center gap-3">
+              {theme === "light" ? (
+                <Sun className="h-5 w-5 text-primary" />
+              ) : (
+                <Moon className="h-5 w-5 text-primary" />
+              )}
+              <div>
+                <div className="font-semibold">Theme</div>
+                <div className="text-sm text-muted-foreground">
+                  {theme === "light" ? "Light Mode" : "Dark Mode"}
+                </div>
+              </div>
+            </div>
+            <Button variant="outline" onClick={toggleTheme}>
+              Switch to {theme === "light" ? "Dark" : "Light"}
+            </Button>
+          </div>
+
           <ShareApp />
           <div className="flex gap-3">
             <Button 

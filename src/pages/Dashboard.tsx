@@ -9,11 +9,13 @@ import CycleSummary from "@/components/CycleSummary";
 import DailyQuote from "@/components/DailyQuote";
 import FertilityInfo from "@/components/FertilityInfo";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { EmailVerificationBanner } from "@/components/EmailVerificationBanner";
 import { calculateFertility, FertilityData } from "@/utils/fertility";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [fertilityData, setFertilityData] = useState<FertilityData | null>(null);
+  const [showVerificationBanner, setShowVerificationBanner] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,10 @@ const Dashboard = () => {
       setUser(session?.user ?? null);
       if (!session) {
         navigate("/auth");
+      } else {
+        // Check if email is verified
+        const emailVerified = session.user.email_confirmed_at !== null;
+        setShowVerificationBanner(!emailVerified);
       }
     });
 
@@ -66,6 +72,12 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-soft pb-20">
       <OnboardingTour />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {showVerificationBanner && user?.email && (
+          <EmailVerificationBanner
+            email={user.email}
+            onDismiss={() => setShowVerificationBanner(false)}
+          />
+        )}
         <div className="space-y-6">
           <DailyQuote />
           <PeriodCountdown userId={user.id} />

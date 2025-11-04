@@ -10,6 +10,7 @@ import Calendar from "./pages/Calendar";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import History from "./pages/History";
+import Community from "./pages/Community";
 import Testimonials from "./pages/Testimonials";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/history" element={<History />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/community" element={<Community />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/install" element={<Install />} />

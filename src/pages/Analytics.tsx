@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import Navigation from "@/components/Navigation";
 import CycleChart from "@/components/CycleChart";
 import SymptomFrequency from "@/components/SymptomFrequency";
+import CyclePredictions from "@/components/CyclePredictions";
 
 const Analytics = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -41,6 +42,7 @@ const Analytics = () => {
           Your Insights
         </h1>
         <div className="space-y-6">
+          <CyclePredictions userId={user.id} />
           <CycleChart userId={user.id} />
           <SymptomFrequency userId={user.id} />
         </div>
