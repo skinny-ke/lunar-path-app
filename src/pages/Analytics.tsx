@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation";
 import CycleChart from "@/components/CycleChart";
 import SymptomFrequency from "@/components/SymptomFrequency";
 import CyclePredictions from "@/components/CyclePredictions";
+import HealthInsights from "@/components/HealthInsights";
 import Footer from "@/components/Footer";
 
 const Analytics = () => {
@@ -43,6 +44,7 @@ const Analytics = () => {
           Your Insights
         </h1>
         <div className="space-y-6">
+          <HealthInsights userId={user.id} />
           <CyclePredictions userId={user.id} />
           <CycleChart userId={user.id} />
           <SymptomFrequency userId={user.id} />

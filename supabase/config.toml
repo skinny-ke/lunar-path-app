@@ -1,1 +1,4 @@
 project_id = "rbphxlxtzwkkxwoswaoe"
+
+[functions.health-insights]
+verify_jwt = false
